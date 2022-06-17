@@ -1,11 +1,10 @@
 {
   "name": "VtigerCRM",
-  "version": "1.0.0.5",
+  "version": "1.0.0.12",
   "description": "Vtiger CRM provides a platform for sales, marketing, and customers for the purpose of information management and business collaboration. This integration with Wave seeks to further the goal of improved customer relationships by allowing Wave users to obtain customer information easily and seamlessly from Vtiger CRM.",
   "icon": "/vtiger_logo.png",
-  "permissions": [
-    "call.listen",
-    "call.dial"
-  ],
-  "plugin_type": "background"
+  "extend_icon":"./extend_icon.png",
+  "permissions": ["call.listen"],
+  "plugin_type": "background",
+  "minimum_wave_version": "1.15.*"
 }

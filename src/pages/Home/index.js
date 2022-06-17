@@ -159,7 +159,10 @@ const HomePage = ({ userConfig, userInfo, saveUserConfig, getContact, putCallInf
             console.log('onRejectP2PCall', callType, callNum);
             uploadCallInfo(callNum, 0, 0);
             if (callNumber.current === callNum) {
-                pluginSDK.hideNotification();
+                setTimeout(() => {
+                    // @ts-ignore
+                    pluginSDK.hideNotification();
+                }, 1000)
             }
         })
 
@@ -172,14 +175,20 @@ const HomePage = ({ userConfig, userInfo, saveUserConfig, getContact, putCallInf
             let { callNum, callStartTimeStamp, callEndTimeStamp } = data
             uploadCallInfo(callNum, callStartTimeStamp ?? 0, callEndTimeStamp ?? 0);
             if (callNumber.current === callNum) {
-                pluginSDK.hideNotification();
+                setTimeout(() => {
+                    // @ts-ignore
+                    pluginSDK.hideNotification();
+                }, 1000)
             }
         })
 
         pluginSDK.eventEmitter.on(EVENT_KEY.p2PCallCanceled, function ({ callNum }) {
             uploadCallInfo(callNum, 0, 0);
             if (callNumber.current === callNum) {
-                pluginSDK.hideNotification();
+                setTimeout(() => {
+                    // @ts-ignore
+                    pluginSDK.hideNotification();
+                }, 1000)
             }
         })
 
@@ -193,25 +202,24 @@ const HomePage = ({ userConfig, userInfo, saveUserConfig, getContact, putCallInf
 
     }, [userConfig])
 
-    return (
-        <>
-            <ConnectError />
-            <div className={styles.homePage}>
-                <ConnectState />
-                <div className={styles.callConfig}>
-                    <Row>
-                        <Col span={19}>
-                            <span className={styles.spanLabel}>{formatMessage({ id: 'home.Synchronize' })}</span>
-                        </Col>
-                        <Col span={4}>
-                            <SwitchBtn />
-                        </Col>
-                    </Row>
-                </div>
-                <Button onClick={logoutClick}>{formatMessage({ id: 'home.logout' })}</Button>
+    return (<>
+        <ConnectError />
+        <div className={styles.homePage}>
+            <ConnectState />
+            <div className={styles.callConfig}>
+                <Row>
+                    <Col span={19}>
+                        <span className={styles.spanLabel}>{formatMessage({ id: 'home.Synchronize' })}</span>
+                    </Col>
+                    <Col span={4}>
+                        <SwitchBtn />
+                    </Col>
+                </Row>
             </div>
-            <Footer url={host + CRM_URL.HOME} message={formatMessage({ id: 'home.toCRM' })} />
-        </>)
+            <Button onClick={logoutClick}>{formatMessage({ id: 'home.logout' })}</Button>
+        </div>
+        <Footer url={host + CRM_URL.HOME} message={formatMessage({ id: 'home.toCRM' })} />
+    </>)
 }
 
 export default connect(({ global }) => ({
@@ -219,11 +227,9 @@ export default connect(({ global }) => ({
 }), (dispatch) => ({
     getContact: payload => dispatch({
         type: 'home/getContact', payload,
-    }),
-    putCallInfo: payload => dispatch({
+    }), putCallInfo: payload => dispatch({
         type: 'home/putCallInfo', payload
-    }),
-    saveUserConfig: payload => dispatch({
+    }), saveUserConfig: payload => dispatch({
         type: 'global/saveUserConfig', payload,
     })
 }))(HomePage);

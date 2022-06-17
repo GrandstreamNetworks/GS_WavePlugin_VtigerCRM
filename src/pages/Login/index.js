@@ -190,7 +190,7 @@ const LoginPage = ({ getChallenge, login, getUser, saveUserConfig, loading = fal
                     </Form>
                 </div>
             </div>
-            <Footer url="" message={formatMessage({ id: 'login.user.guide' })} />
+            <Footer url="https://documentation.grandstream.com/knowledge-base/wave-crm-add-ins/#overview" message={formatMessage({ id: 'login.user.guide' })} />
         </>
     )
 }
