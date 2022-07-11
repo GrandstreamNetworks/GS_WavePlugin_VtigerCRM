@@ -1,38 +1,50 @@
-import React from 'react';
-import { Result, Image } from 'antd';
-import { connect, useIntl } from 'umi';
-import { REQUEST_CODE } from '@/constant';
-import PicSuccess from '../../asset/home/pic-ok.svg';
-import PicFailure from '../../asset/home/pic-link.svg';
-import PicNoPass from '../../asset/home/pic-noPass.svg';
+import React from 'react'
+import { Image, Button } from 'antd'
+import { connect, useIntl } from 'umi'
+import { REQUEST_CODE } from '@/constant'
+import PicSuccess from '@/asset/ConnectState/success.png'
+import PicFailure from '@/asset/ConnectState/failure.png'
 import styles from './index.less'
 
-const IndexPage = ({ connectState, user }) => {
-    const { formatMessage } = useIntl();
+const IndexPage = ({ connectState, user, logout }) => {
+    const { formatMessage } = useIntl()
 
-    return (
-        <div className={styles.resultPage}>
-            <div hidden={connectState !== 'SUCCESS'}>
-                <Result
-                    icon={<Image src={PicSuccess} preview={false} />}
-                    title={user.first_name + user.last_name || undefined}
-                    subTitle={formatMessage({ id: 'home.logged' })}
-                />
-            </div>
-            <div hidden={connectState !== REQUEST_CODE.connectError && connectState !== REQUEST_CODE.reConnect}>
-                <Result
-                    icon={<Image src={PicFailure} preview={false} />}
-                    title={user.first_name + user.last_name || undefined}
-                    subTitle={formatMessage({ id: 'home.connectError' })}
-                />
-            </div>
-            <div hidden={connectState !== REQUEST_CODE.invalidToken}>
-                <Result
-                    icon={<Image src={PicNoPass} preview={false} />}
-                    title={formatMessage({ id: 'home.invalidToken' })}
-                />
+    const logoutClick = () => {
+        logout()
+    }
+
+    return (<div className={styles.resultPage}>
+        <div hidden={connectState !== 'SUCCESS'}>
+            <div className={styles.result}>
+                <Image src={PicSuccess} preview={false} />
+                <div>
+                    <p>{`${user.first_name ?? ''} ${user.last_name ?? ''}`}</p>
+                    <p>{formatMessage({ id: 'home.logged' })}</p>
+                </div>
+                <Button type="primary" onClick={logoutClick}>{formatMessage({ id: 'home.logout' })}</Button>
             </div>
         </div>
+        <div hidden={connectState !== REQUEST_CODE.connectError && connectState !== REQUEST_CODE.reConnect}>
+            <div className={styles.result}>
+                <Image src={PicFailure} preview={false} />
+                <div>
+                    <p>{`${user.first_name ?? ''} ${user.last_name ?? ''}`}</p>
+                    <p>{formatMessage({ id: 'home.connectError' })}</p>
+                </div>
+                <Button type="primary" onClick={logoutClick}>{formatMessage({ id: 'home.logout' })}</Button>
+            </div>
+        </div>
+        <div hidden={connectState !== REQUEST_CODE.invalidToken}>
+            <div className={styles.result}>
+                <Image src={PicFailure} preview={false} />
+                <div>
+                    <p>{`${user.first_name ?? ''} ${user.last_name ?? ''}`}</p>
+                    <p>{formatMessage({ id: 'home.invalidToken' })}</p>
+                </div>
+                <Button type="primary" onClick={logoutClick}>{formatMessage({ id: 'home.logout' })}</Button>
+            </div>
+        </div>
+    </div>
     )
 }
 
@@ -40,5 +52,10 @@ export default connect(
     ({ global }) => ({
         connectState: global.connectState,
         user: global.user
+    }),
+    (dispatch) => ({
+        logout: () => dispatch({
+            type: 'global/logout',
+        })
     })
-)(IndexPage);
+)(IndexPage)

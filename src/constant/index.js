@@ -75,7 +75,30 @@ const DATE_FORMAT = {
     format_5: 'HH:mm:ss Z'
 };
 
+const CONFIG_SHOW = {
+    None: undefined,
+    Name: ['firstname', 'lastname'],
+    Phone: "Phone",
+    Email: 'email',
+    Fax: 'fax',
+    Department: 'department',
+    Title: 'title',
+    Description: 'description'
+
+}
+
+const NotificationConfig = {
+    first: 'information 1',
+    second: 'information 2',
+    third: 'information 3',
+    forth: 'information 4',
+    fifth: 'information 5'
+}
+
+
 export {
+    CONFIG_SHOW,
+    NotificationConfig,
     OPERATION_TYPE,
     CRM_URL,
     GLOBAL_MESSAGE,

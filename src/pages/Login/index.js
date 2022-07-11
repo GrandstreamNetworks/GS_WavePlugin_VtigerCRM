@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { Form, Input, Button, Image, Checkbox } from 'antd';
-import { connect, useIntl, history } from 'umi';
-import { get } from 'lodash';
-import md5 from 'js-md5';
-import { Footer } from '@/components';
-import { OPERATION_TYPE, SESSION_STORAGE_KEY } from '@/constant';
-import HostIcon from '../../asset/login/service-line.svg';
-import AccountIcon from '../../asset/login/account-line.svg';
-import CodeIcon from '../../asset/login/code-line.svg';
-import OpenIcon from '../../asset/login/password-open.svg';
-import CloseIcon from '../../asset/login/password-close.svg';
-import styles from './index.less';
+import React, { useEffect, useState, useRef } from 'react'
+import { Button, Checkbox, Form, Image, Input } from 'antd'
+import { connect, history, useIntl } from 'umi'
+import { get } from 'lodash'
+import md5 from 'js-md5'
+import { Footer } from '@/components'
+import { OPERATION_TYPE, SESSION_STORAGE_KEY } from '@/constant'
+import HostIcon from '../../asset/login/service-line.svg'
+import AccountIcon from '../../asset/login/account-line.svg'
+import CodeIcon from '../../asset/login/code-line.svg'
+import OpenIcon from '../../asset/login/password-open.svg'
+import CloseIcon from '../../asset/login/password-close.svg'
+import styles from './index.less'
 
 /**
  * 登录页
@@ -20,28 +20,29 @@ import styles from './index.less';
  * @param login 登录接口，获取sessionName，用户后续接口调用鉴权
  * @param getUser 获取用户信息
  * @param saveUserConfig
+ * @param save
  * @param loading boolean
  * @returns {JSX.Element}
  * @constructor
  */
-const LoginPage = ({ getChallenge, login, getUser, saveUserConfig, loading = false }) => {
-    const [errorMessage, setErrorMessage] = useState('');
-    const [remember, setRemember] = useState(true);
-    const [form] = Form.useForm();
-    const { formatMessage } = useIntl();
+const LoginPage = ({ getChallenge, login, getUser, saveUserConfig, save, loading = false }) => {
+    const [errorMessage, setErrorMessage] = useState('')
+    const [remember, setRemember] = useState(true)
+
+    const [form] = Form.useForm()
+    const { formatMessage } = useIntl()
 
     const onfocus = () => {
-        setErrorMessage('');
+        setErrorMessage('')
     }
-
 
     /**
      * 自动登录状态更改
      * @param e
      */
     const onCheckChange = e => {
-        setRemember(e.target.checked);
-    };
+        setRemember(e.target.checked)
+    }
 
     /**
      * 登录成功，页面跳转
@@ -49,9 +50,8 @@ const LoginPage = ({ getChallenge, login, getUser, saveUserConfig, loading = fal
      */
     const loginSuccess = () => {
         history.replace({
-            pathname: '/home',
-            query: { action: formatMessage({ id: 'common.login.success' }) }
-        });
+            pathname: '/home'
+        })
     }
 
     /**
@@ -66,20 +66,20 @@ const LoginPage = ({ getChallenge, login, getUser, saveUserConfig, loading = fal
             id,
         }
         getUser(params).then(res => {
-            res?.success && loginSuccess();
+            res?.success && loginSuccess()
         })
     }
 
     const onFinish = async values => {
-        sessionStorage.setItem(SESSION_STORAGE_KEY.host, values.host);
+        sessionStorage.setItem(SESSION_STORAGE_KEY.host, values.host)
         const params = {
             username: values.username,
             operation: OPERATION_TYPE.GET_CHALLENGE,
         }
         getChallenge(params).then(res => {
             if (!res?.success) {
-                setErrorMessage(res?.error?.message);
-                return;
+                setErrorMessage(res?.error?.message)
+                return
             }
             const params = {
                 operation: OPERATION_TYPE.LOGIN,
@@ -88,22 +88,31 @@ const LoginPage = ({ getChallenge, login, getUser, saveUserConfig, loading = fal
             }
             login(params).then(res => {
                 if (!res?.success) {
-                    setErrorMessage(res?.error?.message);
-                    return;
+                    setErrorMessage(res?.error?.message)
+                    return
                 }
-                const sessionName = get(res, ['result', 'sessionName']);
-                const id = get(res, ['result', 'userId']);
-                sessionStorage.setItem(SESSION_STORAGE_KEY.sessionId, sessionName);
+                const sessionName = get(res, ['result', 'sessionName'])
+                const id = get(res, ['result', 'userId'])
+                sessionStorage.setItem(SESSION_STORAGE_KEY.sessionId, sessionName)
                 const userConfig = {
                     ...values,
                     accessKey: remember ? values.accessKey : '',
                     autoLogin: remember,
                     uploadCall: values.uploadCall ?? true,
+                    showConfig: values.showConfig ?? {
+                        first: 'Name', second: 'Phone', third: 'None', forth: 'None', fifth: 'None',
+                    },
                 }
                 saveUserConfig(userConfig)
-                getUserInfo(sessionName, id);
+                save({
+                    uploadCall: values.uploadCall ?? true,
+                    showConfig: values.showConfig ?? {
+                        first: 'Name', second: 'Phone', third: 'None', forth: 'None', fifth: 'None',
+                    },
+                })
+                getUserInfo(sessionName, id)
             })
-        });
+        })
     }
 
     /**
@@ -114,11 +123,11 @@ const LoginPage = ({ getChallenge, login, getUser, saveUserConfig, loading = fal
     useEffect(async () => {
         pluginSDK.userConfig.getUserConfig(function ({ errorCode, data }) {
             if (errorCode === 0 && data) {
-                const userConfig = JSON.parse(data);
-                console.log(userConfig);
-                form.setFieldsValue(userConfig);
+                const userConfig = JSON.parse(data)
+                console.log(userConfig)
+                form.setFieldsValue(userConfig)
                 if (userConfig.autoLogin) {
-                    onFinish(userConfig);
+                    onFinish(userConfig)
                 }
             }
         })
@@ -190,7 +199,8 @@ const LoginPage = ({ getChallenge, login, getUser, saveUserConfig, loading = fal
                     </Form>
                 </div>
             </div>
-            <Footer url="https://documentation.grandstream.com/knowledge-base/wave-crm-add-ins/#overview" message={formatMessage({ id: 'login.user.guide' })} />
+            <Footer url="https://documentation.grandstream.com/knowledge-base/wave-crm-add-ins/#overview"
+                message={formatMessage({ id: 'login.user.guide' })} />
         </>
     )
 }
@@ -200,25 +210,25 @@ export default connect(
         loading: loading.effects['login/getChallenge'] || loading.effects['login/login'] || loading.effects['global/getUser']
     }),
     (dispatch) => ({
-        getChallenge: payload =>
-            dispatch({
-                type: 'login/getChallenge',
-                payload,
-            }),
-        login: payload =>
-            dispatch({
-                type: 'login/login',
-                payload,
-            }),
-        getUser: payload =>
-            dispatch({
-                type: 'global/getUser',
-                payload,
-            }),
-        saveUserConfig: payload =>
-            dispatch({
-                type: 'global/saveUserConfig',
-                payload,
-            })
+        getChallenge: payload => dispatch({
+            type: 'login/getChallenge',
+            payload,
+        }),
+        login: payload => dispatch({
+            type: 'login/login',
+            payload,
+        }),
+        getUser: payload => dispatch({
+            type: 'global/getUser',
+            payload,
+        }),
+        saveUserConfig: payload => dispatch({
+            type: 'global/saveUserConfig',
+            payload,
+        }),
+        save: payload => dispatch({
+            type: 'global/save',
+            payload
+        })
     })
-)(LoginPage);
+)(LoginPage)
