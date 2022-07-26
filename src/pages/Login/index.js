@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Button, Checkbox, Form, Image, Input } from 'antd'
 import { connect, history, useIntl } from 'umi'
 import { get } from 'lodash'
@@ -12,19 +12,6 @@ import OpenIcon from '../../asset/login/password-open.svg'
 import CloseIcon from '../../asset/login/password-close.svg'
 import styles from './index.less'
 
-/**
- * 登录页
- * username：用户名
- * accessKey：访问码
- * @param getChallenge 调用鉴权接口，获取token
- * @param login 登录接口，获取sessionName，用户后续接口调用鉴权
- * @param getUser 获取用户信息
- * @param saveUserConfig
- * @param save
- * @param loading boolean
- * @returns {JSX.Element}
- * @constructor
- */
 const LoginPage = ({ getChallenge, login, getUser, saveUserConfig, save, loading = false }) => {
     const [errorMessage, setErrorMessage] = useState('')
     const [remember, setRemember] = useState(true)
@@ -61,20 +48,17 @@ const LoginPage = ({ getChallenge, login, getUser, saveUserConfig, save, loading
      */
     const getUserInfo = (sessionName, id) => {
         const params = {
-            operation: OPERATION_TYPE.RETRIEVE,
-            sessionName,
-            id,
+            operation: OPERATION_TYPE.RETRIEVE, sessionName, id,
         }
         getUser(params).then(res => {
             res?.success && loginSuccess()
         })
     }
 
-    const onFinish = async values => {
+    const onFinish = values => {
         sessionStorage.setItem(SESSION_STORAGE_KEY.host, values.host)
         const params = {
-            username: values.username,
-            operation: OPERATION_TYPE.GET_CHALLENGE,
+            username: values.username, operation: OPERATION_TYPE.GET_CHALLENGE,
         }
         getChallenge(params).then(res => {
             if (!res?.success) {
@@ -105,8 +89,7 @@ const LoginPage = ({ getChallenge, login, getUser, saveUserConfig, save, loading
                 }
                 saveUserConfig(userConfig)
                 save({
-                    uploadCall: values.uploadCall ?? true,
-                    showConfig: values.showConfig ?? {
+                    uploadCall: values.uploadCall ?? true, showConfig: values.showConfig ?? {
                         first: 'Name', second: 'Phone', third: 'None', forth: 'None', fifth: 'None',
                     },
                 })
@@ -120,7 +103,7 @@ const LoginPage = ({ getChallenge, login, getUser, saveUserConfig, save, loading
      * 填充表单
      * 调用登录方法-onFinish()
      */
-    useEffect(async () => {
+    useEffect(() => {
         pluginSDK.userConfig.getUserConfig(function ({ errorCode, data }) {
             if (errorCode === 0 && data) {
                 const userConfig = JSON.parse(data)
@@ -133,102 +116,79 @@ const LoginPage = ({ getChallenge, login, getUser, saveUserConfig, save, loading
         })
     }, [])
 
-    return (
-        <>
-            {errorMessage && <div className={styles.errorDiv}>
-                <div className={styles.errorMessage}>{formatMessage({ id: errorMessage })}</div>
-            </div>}
-            <div className={styles.homePage}>
-                <div className={styles.form}>
-                    <Form layout="vertical" form={form} onFinish={onFinish} onFocus={onfocus}>
-                        <div className={styles.formContent}>
-                            <Form.Item
-                                name="host"
-                                rules={
-                                    [{
-                                        required: true,
-                                        message: formatMessage({ id: 'login.host.error' })
-                                    }]
-                                }
-                            >
-                                <Input placeholder={formatMessage({ id: 'login.host' })}
-                                    prefix={<Image src={HostIcon} preview={false} />} />
-                            </Form.Item>
-                            <Form.Item
-                                name="username"
-                                rules={[
-                                    {
-                                        required: true,
-                                        message: formatMessage({ id: 'login.username.error' })
-                                    }
-                                ]}>
-                                <Input placeholder={formatMessage({ id: 'login.username' })}
-                                    prefix={<Image src={AccountIcon} preview={false} />}
-                                />
-                            </Form.Item>
-                            <Form.Item
-                                name="accessKey"
-                                rules={[
-                                    {
-                                        required: true,
-                                        message: formatMessage({ id: 'login.accessKey.error' })
-                                    }
-                                ]}>
-                                <Input.Password placeholder={formatMessage({ id: 'login.accessKey' })}
-                                    prefix={<Image src={CodeIcon} preview={false} />}
-                                    iconRender={visible => (visible
-                                        ? <Image src={OpenIcon} preview={false} />
-                                        : <Image src={CloseIcon} preview={false} />)}
-                                />
-                            </Form.Item>
-                        </div>
-                        <Form.Item>
-                            <Button
-                                type="primary"
-                                htmlType="submit"
-                                loading={loading}
-                            >
-                                {formatMessage({ id: 'login.submit' })}
-                            </Button>
+    return (<>
+        {errorMessage && <div className={styles.errorDiv}>
+            <div className={styles.errorMessage}>{formatMessage({ id: errorMessage })}</div>
+        </div>}
+        <div className={styles.homePage}>
+            <div className={styles.form}>
+                <Form layout="vertical" form={form} onFinish={onFinish} onFocus={onfocus}>
+                    <div className={styles.formContent}>
+                        <Form.Item
+                            name="host"
+                            rules={[{
+                                required: true, message: formatMessage({ id: 'login.host.error' })
+                            }]}
+                        >
+                            <Input placeholder={formatMessage({ id: 'login.host' })}
+                                prefix={<Image src={HostIcon} preview={false} />} />
                         </Form.Item>
-                        <div className={styles.remember}>
-                            <Checkbox checked={remember} onChange={onCheckChange}>
-                                {formatMessage({ id: 'login.remember' })}
-                            </Checkbox>
-                        </div>
-                    </Form>
-                </div>
+                        <Form.Item
+                            name="username"
+                            rules={[{
+                                required: true, message: formatMessage({ id: 'login.username.error' })
+                            }]}>
+                            <Input placeholder={formatMessage({ id: 'login.username' })}
+                                prefix={<Image src={AccountIcon} preview={false} />}
+                            />
+                        </Form.Item>
+                        <Form.Item
+                            name="accessKey"
+                            rules={[{
+                                required: true, message: formatMessage({ id: 'login.accessKey.error' })
+                            }]}>
+                            <Input.Password placeholder={formatMessage({ id: 'login.accessKey' })}
+                                prefix={<Image src={CodeIcon} preview={false} />}
+                                iconRender={visible => (visible ? <Image src={OpenIcon}
+                                    preview={false} /> : <Image
+                                    src={CloseIcon} preview={false} />)}
+                            />
+                        </Form.Item>
+                    </div>
+                    <Form.Item>
+                        <Button
+                            type="primary"
+                            htmlType="submit"
+                            loading={loading}
+                        >
+                            {formatMessage({ id: 'login.submit' })}
+                        </Button>
+                    </Form.Item>
+                    <div className={styles.remember}>
+                        <Checkbox checked={remember} onChange={onCheckChange}>
+                            {formatMessage({ id: 'login.remember' })}
+                        </Checkbox>
+                    </div>
+                </Form>
             </div>
-            <Footer url="https://documentation.grandstream.com/knowledge-base/wave-crm-add-ins/#overview"
-                message={formatMessage({ id: 'login.user.guide' })} />
-        </>
-    )
+        </div>
+        <Footer url="https://documentation.grandstream.com/knowledge-base/wave-crm-add-ins/#overview"
+            message={formatMessage({ id: 'login.user.guide' })} />
+    </>)
 }
 
-export default connect(
-    ({ loading }) => ({
-        loading: loading.effects['login/getChallenge'] || loading.effects['login/login'] || loading.effects['global/getUser']
-    }),
-    (dispatch) => ({
-        getChallenge: payload => dispatch({
-            type: 'login/getChallenge',
-            payload,
-        }),
-        login: payload => dispatch({
-            type: 'login/login',
-            payload,
-        }),
-        getUser: payload => dispatch({
-            type: 'global/getUser',
-            payload,
-        }),
-        saveUserConfig: payload => dispatch({
-            type: 'global/saveUserConfig',
-            payload,
-        }),
-        save: payload => dispatch({
-            type: 'global/save',
-            payload
-        })
+export default connect(({ loading }) => ({
+    loading: loading.effects['login/getChallenge'] || loading.effects['login/login'] || loading.effects['global/getUser']
+}), (dispatch) => ({
+    getChallenge: payload => dispatch({
+        type: 'login/getChallenge', payload,
+    }), login: payload => dispatch({
+        type: 'login/login', payload,
+    }), getUser: payload => dispatch({
+        type: 'global/getUser', payload,
+    }), saveUserConfig: payload => dispatch({
+        type: 'global/saveUserConfig', payload,
+    }), save: payload => dispatch({
+        type: 'global/save', payload
     })
-)(LoginPage)
+}))(LoginPage)

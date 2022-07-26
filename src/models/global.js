@@ -9,10 +9,11 @@ export default {
         user: {},
         uploadCall: true,
         showConfig: {},
+        callState: new Map(),
     },
 
     effects: {
-        * getUser ({ payload }, { call, put }) {
+        * getUser({ payload }, { call, put }) {
             const res = yield call(getUser, payload)
             const user = get(res, 'result') || {}
             if (user.id) {
@@ -31,7 +32,7 @@ export default {
             return res
         },
 
-        * uploadCallChange ({ payload }, { put, select }) {
+        * uploadCallChange({ payload }, { put, select }) {
             const { userConfig } = yield select((state) => state.global)
             userConfig.uploadCall = payload
             yield put({
@@ -44,7 +45,7 @@ export default {
             })
         },
 
-        * saveShowConfig ({ payload }, { put, select }) {
+        * saveShowConfig({ payload }, { put, select }) {
             const { userConfig } = yield select((state) => state.global)
             console.log(userConfig)
             userConfig.showConfig = payload
@@ -58,7 +59,7 @@ export default {
             })
         },
 
-        * saveUserConfig ({ payload }, { put }) {
+        * saveUserConfig({ payload }, { put }) {
             console.log(payload)
             pluginSDK.userConfig.addUserConfig({ userConfig: JSON.stringify(payload) }, function ({ errorCode }) {
                 console.log(errorCode)
@@ -70,7 +71,7 @@ export default {
             })
         },
 
-        * logout (_, { put, select }) {
+        * logout(_, { put, select }) {
             const { userConfig } = yield select((state) => state.global)
             userConfig.autoLogin = false
             userConfig.accessKey = undefined
@@ -83,7 +84,7 @@ export default {
     },
 
     reducers: {
-        save (state, action) {
+        save(state, action) {
             return { ...state, ...action.payload }
         },
     },
