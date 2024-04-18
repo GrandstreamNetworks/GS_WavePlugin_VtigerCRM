@@ -8,11 +8,13 @@ const OPERATION_TYPE = {
     EVENT: 'Events',
 };
 
+const LOGIN_KEYS = ['username', 'accessKey', 'host']
+
 const CRM_URL = {
     HOME: '/index.php',
     DETAIL_URL: '/index.php?module=Contacts&view=Detail&record=', // 联系人详情
     EDIT_URL: '/index.php?module=Contacts&view=Edit', // 新建联系人
-}
+};
 
 const GLOBAL_MESSAGE = {
     timeout: 'global_message_timeout',
@@ -49,7 +51,7 @@ const SESSION_STORAGE_KEY = {
     sessionId: 'sessionId',
     host: 'host',
     userId: ' userId',
-}
+};
 
 const EVENT_KEY = {
     recvP2PIncomingCall: 'onRecvP2PIncomingCall', // 收到来电
@@ -59,52 +61,89 @@ const EVENT_KEY = {
     initP2PCall: 'onInitP2PCall', // wave发去呼叫
     p2PCallCanceled: 'onP2PCallCanceled', // 未接来电、去电
     initPluginWindowOk: 'onInitPluginWindowOk', //初始化窗口成功
-}
+    onViewCustomerInfos: 'onViewCustomerInfos', // 收到客户信息
+};
 
 const WAVE_CALL_TYPE = {
     in: 'Inbound',
     out: 'Outbound',
     miss: 'Missed',
-}
+};
 
 const DATE_FORMAT = {
     format_1: 'YYYY/MM/DD',
     format_2: 'YYYY/MM/DD HH/mm/ss',
     format_3: 'YYYY-MM-DD',
     format_4: 'YYYY-MM-DD HH:mm:ss',
-    format_5: 'HH:mm:ss Z'
+    format_5: 'HH:mm:ss Z',
+    format_6: 'HH:mm:ss',
 };
 
 const CONFIG_SHOW = {
     None: undefined,
     Name: ['firstname', 'lastname'],
-    Phone: "Phone",
+    Phone: 'Phone',
     Email: 'email',
     Fax: 'fax',
     Department: 'department',
     Title: 'title',
-    Description: 'description'
-
-}
+    Description: 'description',
+};
 
 const NotificationConfig = {
-    first: 'information 1',
-    second: 'information 2',
-    third: 'information 3',
-    forth: 'information 4',
-    fifth: 'information 5'
-}
+    first: 'Information 1',
+    second: 'Information 2',
+    third: 'Information 3',
+    forth: 'Information 4',
+    fifth: 'Information 5',
+};
 
+const NOTIFICATION_CONFIG_DEF = {
+    first: 'Name',
+    second: 'Phone',
+    third: 'None',
+    forth: 'None',
+    fifth: 'None',
+};
+
+const AUTO_CREATE_CONFIG_DEF = {
+    numberType: 'Wave',
+    direction: 'All',
+    entityType: 'Contact',
+    firstName: 'Wave [Number]',
+    lastName: 'New',
+};
+
+const UPLOAD_CALL_CONFIG_DEF = {
+    subject: 'Wave PhoneSystem Call',
+    Inbound: '[DateTime]: Incoming call from [Number] [Name] to [Agent]([Duration])',
+    Missed: '[DateTime]: Missed call from [Number] [Name] to [Agent]',
+    Outbound: '[DateTime]: Outgoing call from [Agent] to [Number] [Name] ([Duration])',
+    unansweredOutbound: '[DateTime]: Unanswered outgoing call from [Agent] to [Number] [Name]',
+};
+
+const CREATION_CONFIG_CONTACT_TYPE = ['Contact', 'Lead'];
+
+const MODULES = {
+    contact: 'Contacts',
+    lead: 'Leads',
+};
 
 export {
+    LOGIN_KEYS,
+    MODULES,
+    AUTO_CREATE_CONFIG_DEF,
     CONFIG_SHOW,
+    CREATION_CONFIG_CONTACT_TYPE,
+    CRM_URL,
+    DATE_FORMAT,
+    EVENT_KEY,
+    GLOBAL_MESSAGE,
+    NOTIFICATION_CONFIG_DEF,
     NotificationConfig,
     OPERATION_TYPE,
-    CRM_URL,
-    GLOBAL_MESSAGE,
     REQUEST_CODE,
     SESSION_STORAGE_KEY,
-    EVENT_KEY,
+    UPLOAD_CALL_CONFIG_DEF,
     WAVE_CALL_TYPE,
-    DATE_FORMAT
 };
